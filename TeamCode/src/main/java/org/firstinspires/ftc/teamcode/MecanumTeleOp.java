@@ -9,12 +9,11 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 public class MecanumTeleOp extends LinearOpMode {
     @Override
     public void runOpMode() {
-        DcMotor frontLeft  = hardwareMap.get(DcMotor.class, "frontLeft");
-        DcMotor backLeft   = hardwareMap.get(DcMotor.class, "backLeft");
-        DcMotor frontRight = hardwareMap.get(DcMotor.class, "frontRight");
-        DcMotor backRight  = hardwareMap.get(DcMotor.class, "backRight");
+        DcMotor frontLeft  = hardwareMap.get(DcMotor.class, "fl");
+        DcMotor backLeft   = hardwareMap.get(DcMotor.class, "bl");
+        DcMotor frontRight = hardwareMap.get(DcMotor.class, "fr");
+        DcMotor backRight  = hardwareMap.get(DcMotor.class, "br");
 
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         for (DcMotor m : new DcMotor[]{frontLeft, backLeft, frontRight, backRight}) {
