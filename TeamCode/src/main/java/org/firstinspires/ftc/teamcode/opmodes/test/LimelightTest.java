@@ -46,7 +46,7 @@ public class LimelightTest extends LinearOpMode {
                             "x=%.1f°  y=%.1f°", tag.getTargetXDegrees(), tag.getTargetYDegrees());
                 }
 
-                // 算對準需要的轉向（只顯示，不送馬達）
+                // 算對準需要的轉向
                 double turn = Range.clip(tx * TURN_KP, -0.5, 0.5);
                 telemetry.addData("建議 turn", "%.3f", turn);
                 telemetry.addData("已對準?", Math.abs(tx) < AIM_TOLERANCE_DEG ? "是" : "否");

@@ -11,7 +11,6 @@ public class PinpointTest extends LinearOpMode {
     public void runOpMode() {
         Localizer localizer = new Localizer(hardwareMap);
 
-        // init 階段也持續更新，可以看到狀態從 CALIBRATING 變成 READY
         while (opModeInInit()) {
             localizer.update();
             telemetry.addLine("初始化中不要動機器人，等 READY 再按 START");
