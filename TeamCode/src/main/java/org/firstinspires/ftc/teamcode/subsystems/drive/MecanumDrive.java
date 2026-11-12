@@ -43,6 +43,12 @@ public class MecanumDrive implements Subsystem {
         brPower = br / max * speedMultiplier;
     }
 
+    public void driveFieldCentric(double x, double y, double turn, double headingRad) {
+        double strafe  = x * Math.cos(-headingRad) - y * Math.sin(-headingRad);
+        double forward = x * Math.sin(-headingRad) + y * Math.cos(-headingRad);
+        drive(forward, strafe, turn);
+    }
+
     public void setSpeedMultiplier(double m) {
         speedMultiplier = m;
     }
