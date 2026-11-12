@@ -6,9 +6,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.Constants.DriveConstants;
+import org.firstinspires.ftc.teamcode.Constants.FieldConstants;
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.RobotState;
+import org.firstinspires.ftc.teamcode.lib.Alliance;
 @TeleOp(name = "Mecanum TeleOp", group = "Drive")
 public class MecanumTeleOp extends LinearOpMode {
     @Override
@@ -22,17 +27,64 @@ public class MecanumTeleOp extends LinearOpMode {
         boolean holding = false;
         ElapsedTime sinceTurn = new ElapsedTime();
 
+        boolean useSavedPose = RobotState.hasPose();
+
         while (opModeInInit()) {
             robot.localizer.update();
+
+            if (gamepad1.bWasPressed()) {
+                RobotState.alliance = Alliance.RED;
+            }
+            if (gamepad1.xWasPressed()) {
+                RobotState.alliance = Alliance.BLUE;
+            }
+            if (gamepad1.aWasPressed() && RobotState.hasPose()) {
+                useSavedPose = !useSavedPose;
+            }
+            int startCount = FieldConstants.redStartPoses.length;
+            if (gamepad1.dpadRightWasPressed()) {
+                RobotState.startIndex = (RobotState.startIndex + 1) % startCount;
+            }
+            if (gamepad1.dpadLeftWasPressed()) {
+                RobotState.startIndex = (RobotState.startIndex - 1 + startCount) % startCount;
+            }
+            Pose2D selectedStart = RobotState.alliance.fromRed(
+                    FieldConstants.redStartPoses[RobotState.startIndex]);
+
             telemetry.addLine("初始化中不要動機器人，等 Pinpoint READY 再按 START");
+            telemetry.addData("聯盟（B 紅 / X 藍）", RobotState.alliance);
+            telemetry.addData("起點（dpad ← / →）", "%d / %d %s (%.1f, %.1f, %.0f°)",
+                    RobotState.startIndex + 1, startCount,
+                    FieldConstants.startNames[RobotState.startIndex],
+                    selectedStart.getX(DistanceUnit.INCH), selectedStart.getY(DistanceUnit.INCH),
+                    selectedStart.getHeading(AngleUnit.DEGREES));
+            if (RobotState.hasPose()) {
+                Pose2D saved = RobotState.lastPose;
+                telemetry.addData("起始座標（A 切換）", useSavedPose ? "接續上一個 OpMode" : "起點");
+                telemetry.addData("上一個 OpMode 的座標", "(%.1f, %.1f, %.0f°)，%.0f 秒前",
+                        saved.getX(DistanceUnit.INCH), saved.getY(DistanceUnit.INCH),
+                        saved.getHeading(AngleUnit.DEGREES), RobotState.secondsSinceSave());
+            } else {
+                telemetry.addData("起始座標", "起點");
+            }
             robot.localizer.addTelemetry(telemetry);
             telemetry.update();
         }
+
+        Pose2D startPose = useSavedPose
+                ? RobotState.lastPose
+                : RobotState.alliance.fromRed(FieldConstants.redStartPoses[RobotState.startIndex]);
+        robot.localizer.setPoseWhenReady(startPose);
+        driverForwardRad = RobotState.alliance.driverForwardRad();
 
         sinceTurn.reset();
 
         while (opModeIsActive()) {
             robot.readSensors();
+
+            if (robot.localizer.hasPendingPose()) {
+                sinceTurn.reset();
+            }
 
             if (gamepad1.dpadUpWasPressed()) {
                 driverForwardRad = robot.localizer.getHeadingRad();
@@ -76,6 +128,7 @@ public class MecanumTeleOp extends LinearOpMode {
 
             robot.writeOutputs();
 
+            telemetry.addData("聯盟", RobotState.alliance);
             telemetry.addData("模式",
                     fieldCentric ? "Field-centric（dpad↓ 切換）" : "Robot-centric（dpad↓ 切換）");
             telemetry.addLine("dpad↑ = 把車頭現在的方向設成前方");

@@ -34,6 +34,9 @@ public class Robot {
             hub.clearBulkCache();
         }
         localizer.update();
+        if (!localizer.hasPendingPose()) {
+            RobotState.savePose(localizer.getPose());
+        }
     }
 
     public void writeOutputs() {
