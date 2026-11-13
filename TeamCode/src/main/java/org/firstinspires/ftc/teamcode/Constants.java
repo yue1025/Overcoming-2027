@@ -9,12 +9,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 public class Constants {
     public static final class FieldConstants {
         public static final String[] startNames = {
-                "牆中央",
-                "牆靠觀眾",
+                "牆中央"
         };
         public static final Pose2D[] redStartPoses = {
-                new Pose2D(DistanceUnit.INCH, 0, -63, AngleUnit.DEGREES, 90),
-                new Pose2D(DistanceUnit.INCH, 48, -63, AngleUnit.DEGREES, 90),
+                new Pose2D(DistanceUnit.INCH, 0, -65.4, AngleUnit.DEGREES, 90)
         };
     }
 
