@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -16,8 +17,12 @@ public class Robot {
     public final MecanumDrive drive;
     private final List<LynxModule> hubs;
     private final Subsystem[] subsystems;
+    private final LinearOpMode opMode;
 
-    public Robot(HardwareMap hw) {
+    public Robot(LinearOpMode opMode) {
+        this.opMode = opMode;
+        HardwareMap hw = opMode.hardwareMap;
+
         hubs = hw.getAll(LynxModule.class);
         for (LynxModule hub : hubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
@@ -34,7 +39,7 @@ public class Robot {
             hub.clearBulkCache();
         }
         localizer.update();
-        if (!localizer.hasPendingPose()) {
+        if (!localizer.hasPendingPose() && !opMode.isStopRequested()) {
             RobotState.savePose(localizer.getPose());
         }
     }

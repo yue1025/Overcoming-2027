@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.lib.Alliance;
 public class MecanumTeleOp extends LinearOpMode {
     @Override
     public void runOpMode() {
-        Robot robot = new Robot(hardwareMap);
+        Robot robot = new Robot(this);
 
         boolean fieldCentric = true;
         double driverForwardRad = 0;
