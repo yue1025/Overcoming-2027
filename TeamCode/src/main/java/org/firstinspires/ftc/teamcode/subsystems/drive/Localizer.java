@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Subsystem;
 public class Localizer implements Subsystem {
     private final GoBildaPinpointDriver pinpoint;
     private Pose2D pose = new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.RADIANS, 0);
+    private Pose2D pendingPose = null;
 
     public Localizer(HardwareMap hw) {
         pinpoint = hw.get(GoBildaPinpointDriver.class, LocalizerConstants.pinpointName);
@@ -26,6 +27,18 @@ public class Localizer implements Subsystem {
     public void update() {
         pinpoint.update();
         pose = pinpoint.getPosition();
+        if (pendingPose != null && isReady()) {
+            setPose(pendingPose);
+            pendingPose = null;
+        }
+    }
+
+    public void setPoseWhenReady(Pose2D newPose) {
+        pendingPose = newPose;
+    }
+
+    public boolean hasPendingPose() {
+        return pendingPose != null;
     }
 
     public Pose2D getPose() {

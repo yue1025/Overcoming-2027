@@ -2,7 +2,20 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+
 public class Constants {
+    public static final class FieldConstants {
+        public static final String[] startNames = {
+                "牆中央"
+        };
+        public static final Pose2D[] redStartPoses = {
+                new Pose2D(DistanceUnit.INCH, 0, -65.4, AngleUnit.DEGREES, 90)
+        };
+    }
+
     public static final class DriveConstants {
         public static final String frontLeft  = "fl";
         public static final String backLeft    = "bl";
